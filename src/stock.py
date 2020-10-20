@@ -39,6 +39,9 @@ class StockScraper():
 
         for row in stockTable: 
             cells = self.__getArrayFromRow(row)
+
+            #todo: get link to the detail page here.
+
             if len(cells) != 0:
                 print(cells)
 
