@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup 
 import csv 
 
+from companydetail import DetailScraper
+
 class StockScraper():
 
     def __internalMethod(self, attr):
@@ -48,7 +50,13 @@ class StockScraper():
                 detailLinks.append(self.__getLinkURL(row))
                 stockInfo.append(cells)
 
-        print(detailLinks)
-        print(stockInfo)
+        # print(detailLinks)
+        # print(stockInfo)
 
         #todo: add this information into a file
+
+
+        details= DetailScraper()
+
+        for link in detailLinks:
+            details.scrapeDetails(link)
