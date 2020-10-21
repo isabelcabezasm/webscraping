@@ -24,6 +24,16 @@ data ={'ctl00%24Contenido%24Desde%24Dia' : '20',
 'ctl00%24Contenido%24Hasta%24A%C3%B1o':'2019'        
 }
 
+data ={'ctl00$Contenido$Desde$Dia' : '20',
+'ctl00$Contenido$Desde$Mes': '09', 
+'ctl00$Contenido$Desde$Año':'2019',
+'ctl00$Contenido$Hasta$Dia':'19',
+'ctl00$Contenido$Hasta$Mes':'10',
+'ctl00$Contenido$Hasta$Año':'2019'        
+}
+
+
+
 page = requests.post(str, data=data) 
 bs = BeautifulSoup(page.content, 'html.parser')
 
