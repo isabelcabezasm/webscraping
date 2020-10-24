@@ -7,11 +7,17 @@ class DetailScraper():
 
     def __init__(self):
             self.url = "https://www.bolsamadrid.es"
-            self.subdomain = "/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000"
             self.data = []
 
-    def scrapeDetails(self, url):
-        print("this is the page with the details: ")
-        print (self.url+url)
+    def __getPrizeTable(self, soup, id):
+        table = soup.find(id=id) 
+        items = table.find_all('tr') 
+        return items
 
-        #todo: request and parse
+    def scrapeDetails(self, url):
+        page = requests.get(self.url+url) 
+        soup = BeautifulSoup(page.text, 'html.parser')    
+        
+        # Últimos precios     
+        prizeTable = self.__getPrizeTable(soup, 'ctl00_Contenido_tblPrecios')
+        print (prizeTable)

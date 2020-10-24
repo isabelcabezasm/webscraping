@@ -53,7 +53,7 @@ class StockScraper():
         # print(detailLinks)
         # print(stockInfo)
 
-        #todo: add this information into a file
+        #todo: add "stockInfo" information into a file
 
 
         details= DetailScraper()
