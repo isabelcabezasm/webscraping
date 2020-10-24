@@ -16,7 +16,7 @@ class StoreServiceInterface():
         self.file_name = file_name
         
     def open_file(self):
-        new_file=open("newfile.txt",mode="a+",encoding="utf-8")
+        new_file=open(self.path + "/" + self.file_name,mode="a+",encoding="utf-8")
 
 
     def check_directory(self):

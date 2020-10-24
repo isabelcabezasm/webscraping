@@ -34,5 +34,15 @@ class TestStocksStore(unittest.TestCase):
                 
         self.assertEqual(storeObject.check_directory(), False)
 
+    def test_file_is_create(self):
+        path =  os.getcwd()
+        file = 'testFile'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+                
+        self.assertEqual(os.path.isfile(os.getcwd()+"/"+file), True) 
+        if(os.path.isfile(os.getcwd()+"/"+file):
+            os.remove(os.getcwd()+"/"+file)      
+
 if __name__ == '__main__':
     unittest.main()
