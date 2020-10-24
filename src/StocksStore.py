@@ -15,9 +15,16 @@ class StoreServiceInterface():
         self.path = path
         self.file_name = file_name
         
-
-    def write_row(self, full_file_name: str):
+    def open_file(self):
         new_file=open("newfile.txt",mode="a+",encoding="utf-8")
 
+
     def check_directory(self):
-        os.DirEntry()
+        if(os.path.exists(self.path)):
+            return True
+        else:
+            return False
+
+
+    def write_row(self, full_file_name: str):
+        print()
