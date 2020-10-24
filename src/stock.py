@@ -11,9 +11,9 @@ class StockScraper():
         return "nothing"
     
     
-    def __init__(self):
-            self.url = "https://www.bolsamadrid.es"
-            self.subdomain = "/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000"
+    def __init__(self, url,subdomain):
+            self.url = url #"https://www.bolsamadrid.es"
+            self.subdomain = subdomain #"/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000"
             self.data = []
 
     def __getHtml(self, url):
