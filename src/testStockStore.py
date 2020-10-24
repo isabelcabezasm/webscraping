@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from src.StocksStore import StoreServiceInterface
+from StocksStore import StoreServiceInterface
 
 class TestStocksStore(unittest.TestCase):
     def test_creation(self):
@@ -27,7 +27,7 @@ class TestStocksStore(unittest.TestCase):
            
         self.assertEqual(storeObject.check_directory(), True)
 
-    def test_check_fake_directory_exists(self):
+    def test_check_fake_directory_not_exists(self):
         path= 'xjxjxj'
         file = ''
         storeObject = StoreServiceInterface(path,file)
