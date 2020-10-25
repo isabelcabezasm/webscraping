@@ -2,7 +2,7 @@
 import os
 import csv
 
-class StoreServiceInterface():
+class StoreService():
 
 #no hay multiple contructors como hacemos si no envian nada
 

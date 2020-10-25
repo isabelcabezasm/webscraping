@@ -16,7 +16,6 @@ class TestStocksStore(unittest.TestCase):
         pass
 
     def rowToByte(self,row):
-        row = sum(row, [])
         return bytes(','.join(row)+'\r\n','UTF-8')
 
 
@@ -81,17 +80,7 @@ class TestStocksStore(unittest.TestCase):
 
         compare(self.test_dir.read(file), self.rowToByte(row))
 
-    def test_write_list_multiple_rows_to_file(self):
-        path =  self.test_dir.path
-        file = 'testFile.csv'
-        storeObject = StoreServiceInterface(path,file)
-        storeObject.open_file()
-        row = [['dato','01','08'],['algo','09','08']]
-        storeObject.write_row(row)
-        storeObject.close_file()
-
-        compare(self.test_dir.read(file), self.rowToByte(row))
-
+ 
 if __name__ == '__main__':
     # unittest.main()
     suite = unittest.TestLoader().loadTestsFromTestCase(TestStocksStore)
