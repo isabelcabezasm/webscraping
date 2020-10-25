@@ -2,8 +2,19 @@ import unittest
 import os
 
 from StocksStore import StoreServiceInterface
+from testfixtures import tempdir, compare
 
 class TestStocksStore(unittest.TestCase):
+
+    def setUp(self):
+        #nothing to do here
+        pass
+
+    def tearDown(self):
+        #nothing to do here
+        pass
+
+
     def test_creation(self):
         path= os.getcwd()
         file = 'file'
@@ -39,23 +50,21 @@ class TestStocksStore(unittest.TestCase):
         file = 'testFile'
         storeObject = StoreServiceInterface(path,file)
         storeObject.open_file()
+        storeObject.close_file()
                 
         self.assertEqual(os.path.isfile(os.path.join(path, file)), True) 
         if(os.path.isfile(os.path.join(path, file))):
             os.remove(os.path.join(path, file))      
 
-    # def test_write_row(self):
-    #     path =  os.getcwd()
-    #     file = 'testFile'
-    #     storeObject = StoreServiceInterface(path,file)
-    #     storeObject.open_file()
-    #     row = [[1],[2]]
-    #     storeObject.write_row(row)
-                
-    #     self.assertEqual(os.path.isfile(os.getcwd()+"/"+file), True) 
-    #     if(os.path.isfile(os.getcwd()+"/"+file)):
-    #         os.remove(os.getcwd()+"/"+file)     
+    @tempdir()
+    def test_written_contents_to_file(self,dir):
+        # dir.write('test.txt', b'some foo thing')
+        # foo2bar(dir.path, 'test.txt')
+        
 
+        compare(dir.read('test.txt'), b'some bar thing')
 
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestStocksStore)
+    unittest.TextTestRunner(verbosity=2).run(suite) 
