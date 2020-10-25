@@ -17,7 +17,7 @@ class StoreServiceInterface():
         self.file_name = file_name
         
     def open_file(self):
-        self.new_file=open(os.path.join(self.path, self.file_name),mode="a+",encoding="utf-8")
+        self.new_file=open(os.path.join(self.path, self.file_name),mode="a+",encoding="utf-8", newline='',)
 
     def close_file(self):
         self.new_file.close()
@@ -35,3 +35,4 @@ class StoreServiceInterface():
         if (not self.new_file):
             self.open_file()
         stocks_writer = csv.writer(self.new_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        stocks_writer.writerow(row)

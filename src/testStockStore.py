@@ -2,21 +2,25 @@ import unittest
 import os
 
 from StocksStore import StoreServiceInterface
-from testfixtures import tempdir, compare
+from testfixtures import TempDirectory, compare
 
 class TestStocksStore(unittest.TestCase):
 
     def setUp(self):
-        #nothing to do here
+        self.test_dir = TempDirectory()
+        
         pass
 
     def tearDown(self):
-        #nothing to do here
+        self.test_dir.cleanup()
         pass
 
+    def rowToByte(self,row):
+        return bytes(','.join(row)+'\r\n','UTF-8')
 
-    def test_creation(self):
-        path= os.getcwd()
+
+    def test_creation_object(self):
+        path= self.test_dir.path
         file = 'file'
         storeObject = StoreServiceInterface(path,file)
                 
@@ -32,7 +36,7 @@ class TestStocksStore(unittest.TestCase):
         self.assertEqual(storeObject.file_name, 'StoreServiceFile')
 
     def test_check_real_directory_exists(self):
-        path= os.getcwd()
+        path= self.test_dir.path
         file = ''
         storeObject = StoreServiceInterface(path,file)
            
@@ -46,23 +50,25 @@ class TestStocksStore(unittest.TestCase):
         self.assertEqual(storeObject.check_directory(), False)
 
     def test_file_is_create(self):
-        path =  os.getcwd()
+        path =  self.test_dir.path
         file = 'testFile'
         storeObject = StoreServiceInterface(path,file)
         storeObject.open_file()
         storeObject.close_file()
                 
         self.assertEqual(os.path.isfile(os.path.join(path, file)), True) 
-        if(os.path.isfile(os.path.join(path, file))):
-            os.remove(os.path.join(path, file))      
 
-    @tempdir()
-    def test_written_contents_to_file(self,dir):
-        # dir.write('test.txt', b'some foo thing')
-        # foo2bar(dir.path, 'test.txt')
-        
+    def test_written_contents_to_file(self):
+        path =  self.test_dir.path
+        file = 'testFile.csv'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+        row = ['dato','01','08']
+        storeObject.write_row(row)
+        storeObject.close_file()
 
-        compare(dir.read('test.txt'), b'some bar thing')
+        #self.assertEqual(path.read('testFile'),'prueba')
+        compare(self.test_dir.read(file), self.rowToByte(row))
 
 if __name__ == '__main__':
     # unittest.main()
