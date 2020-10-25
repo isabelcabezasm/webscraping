@@ -40,9 +40,22 @@ class TestStocksStore(unittest.TestCase):
         storeObject = StoreServiceInterface(path,file)
         storeObject.open_file()
                 
-        self.assertEqual(os.path.isfile(os.getcwd()+"/"+file), True) 
-        if(os.path.isfile(os.getcwd()+"/"+file)):
-            os.remove(os.getcwd()+"/"+file)      
+        self.assertEqual(os.path.isfile(os.path.join(path, file)), True) 
+        if(os.path.isfile(os.path.join(path, file))):
+            os.remove(os.path.join(path, file))      
+
+    # def test_write_row(self):
+    #     path =  os.getcwd()
+    #     file = 'testFile'
+    #     storeObject = StoreServiceInterface(path,file)
+    #     storeObject.open_file()
+    #     row = [[1],[2]]
+    #     storeObject.write_row(row)
+                
+    #     self.assertEqual(os.path.isfile(os.getcwd()+"/"+file), True) 
+    #     if(os.path.isfile(os.getcwd()+"/"+file)):
+    #         os.remove(os.getcwd()+"/"+file)     
+
 
 if __name__ == '__main__':
     unittest.main()
