@@ -41,7 +41,7 @@ class TestStocksStore(unittest.TestCase):
         storeObject.open_file()
                 
         self.assertEqual(os.path.isfile(os.getcwd()+"/"+file), True) 
-        if(os.path.isfile(os.getcwd()+"/"+file):
+        if(os.path.isfile(os.getcwd()+"/"+file)):
             os.remove(os.getcwd()+"/"+file)      
 
 if __name__ == '__main__':
