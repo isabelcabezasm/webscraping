@@ -16,6 +16,7 @@ class TestStocksStore(unittest.TestCase):
         pass
 
     def rowToByte(self,row):
+        row = sum(row, [])
         return bytes(','.join(row)+'\r\n','UTF-8')
 
 
@@ -58,7 +59,7 @@ class TestStocksStore(unittest.TestCase):
                 
         self.assertEqual(os.path.isfile(os.path.join(path, file)), True) 
 
-    def test_written_contents_to_file(self):
+    def test_write_list_to_file(self):
         path =  self.test_dir.path
         file = 'testFile.csv'
         storeObject = StoreServiceInterface(path,file)
@@ -67,7 +68,28 @@ class TestStocksStore(unittest.TestCase):
         storeObject.write_row(row)
         storeObject.close_file()
 
-        #self.assertEqual(path.read('testFile'),'prueba')
+        compare(self.test_dir.read(file), self.rowToByte(row))
+
+    def test_write_string_to_file(self):
+        path =  self.test_dir.path
+        file = 'testFile.csv'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+        row = 'hola'
+        storeObject.write_row(row)
+        storeObject.close_file()
+
+        compare(self.test_dir.read(file), self.rowToByte(row))
+
+    def test_write_list_multiple_rows_to_file(self):
+        path =  self.test_dir.path
+        file = 'testFile.csv'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+        row = [['dato','01','08'],['algo','09','08']]
+        storeObject.write_row(row)
+        storeObject.close_file()
+
         compare(self.test_dir.read(file), self.rowToByte(row))
 
 if __name__ == '__main__':
