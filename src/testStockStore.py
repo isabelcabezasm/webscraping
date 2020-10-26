@@ -1,14 +1,13 @@
 import unittest
 import os
 
-from StocksStore import StoreServiceInterface
+from StocksStore import StoreService
 from testfixtures import TempDirectory, compare
 
 class TestStocksStore(unittest.TestCase):
 
     def setUp(self):
         self.test_dir = TempDirectory()
-        
         pass
 
     def tearDown(self):
@@ -22,7 +21,7 @@ class TestStocksStore(unittest.TestCase):
     def test_creation_object(self):
         path= self.test_dir.path
         file = 'file'
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
                 
         self.assertEqual(storeObject.path, path)
         self.assertEqual(storeObject.file_name, file)
@@ -30,7 +29,7 @@ class TestStocksStore(unittest.TestCase):
     def test_creation_with_empty_values(self):
         path= ''
         file = ''
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
               
         self.assertEqual(storeObject.path, os.getcwd())
         self.assertEqual(storeObject.file_name, 'StoreServiceFile')
@@ -38,21 +37,21 @@ class TestStocksStore(unittest.TestCase):
     def test_check_real_directory_exists(self):
         path= self.test_dir.path
         file = ''
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
            
         self.assertEqual(storeObject.check_directory(), True)
 
     def test_check_fake_directory_not_exists(self):
         path= 'xjxjxj'
         file = ''
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
                 
         self.assertEqual(storeObject.check_directory(), False)
 
     def test_file_is_create(self):
         path =  self.test_dir.path
         file = 'testFile'
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
         storeObject.open_file()
         storeObject.close_file()
                 
@@ -61,7 +60,7 @@ class TestStocksStore(unittest.TestCase):
     def test_write_list_to_file(self):
         path =  self.test_dir.path
         file = 'testFile.csv'
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
         storeObject.open_file()
         row = ['dato','01','08']
         storeObject.write_row(row)
@@ -72,7 +71,7 @@ class TestStocksStore(unittest.TestCase):
     def test_write_string_to_file(self):
         path =  self.test_dir.path
         file = 'testFile.csv'
-        storeObject = StoreServiceInterface(path,file)
+        storeObject = StoreService(path,file)
         storeObject.open_file()
         row = 'hola'
         storeObject.write_row(row)
