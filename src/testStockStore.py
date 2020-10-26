@@ -2,10 +2,25 @@ import unittest
 import os
 
 from StocksStore import StoreServiceInterface
+from testfixtures import TempDirectory, compare
 
 class TestStocksStore(unittest.TestCase):
-    def test_creation(self):
-        path= os.getcwd()
+
+    def setUp(self):
+        self.test_dir = TempDirectory()
+        
+        pass
+
+    def tearDown(self):
+        self.test_dir.cleanup()
+        pass
+
+    def rowToByte(self,row):
+        return bytes(','.join(row)+'\r\n','UTF-8')
+
+
+    def test_creation_object(self):
+        path= self.test_dir.path
         file = 'file'
         storeObject = StoreServiceInterface(path,file)
                 
@@ -21,7 +36,7 @@ class TestStocksStore(unittest.TestCase):
         self.assertEqual(storeObject.file_name, 'StoreServiceFile')
 
     def test_check_real_directory_exists(self):
-        path= os.getcwd()
+        path= self.test_dir.path
         file = ''
         storeObject = StoreServiceInterface(path,file)
            
@@ -34,15 +49,39 @@ class TestStocksStore(unittest.TestCase):
                 
         self.assertEqual(storeObject.check_directory(), False)
 
-    # def test_file_is_create(self):
-    #     path =  os.getcwd()
-    #     file = 'testFile'
-    #     storeObject = StoreServiceInterface(path,file)
-    #     storeObject.open_file()
+    def test_file_is_create(self):
+        path =  self.test_dir.path
+        file = 'testFile'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+        storeObject.close_file()
                 
-    #     self.assertEqual(os.path.isfile(os.getcwd()+"/"+file), True) 
-    #     if (os.path.isfile(os.getcwd()+"/"+file):  #JORGE!! esto me da error... :? 
-    #         os.remove(os.getcwd()+"/"+file)      
+        self.assertEqual(os.path.isfile(os.path.join(path, file)), True) 
 
+    def test_write_list_to_file(self):
+        path =  self.test_dir.path
+        file = 'testFile.csv'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+        row = ['dato','01','08']
+        storeObject.write_row(row)
+        storeObject.close_file()
+
+        compare(self.test_dir.read(file), self.rowToByte(row))
+
+    def test_write_string_to_file(self):
+        path =  self.test_dir.path
+        file = 'testFile.csv'
+        storeObject = StoreServiceInterface(path,file)
+        storeObject.open_file()
+        row = 'hola'
+        storeObject.write_row(row)
+        storeObject.close_file()
+
+        compare(self.test_dir.read(file), self.rowToByte(row))
+
+ 
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestStocksStore)
+    unittest.TextTestRunner(verbosity=2).run(suite) 
