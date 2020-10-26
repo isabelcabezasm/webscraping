@@ -58,5 +58,8 @@ class StockScraper():
 
         details= DetailScraper()
 
-        for link in detailLinks:
-            details.scrapeDetails(link)
+        n=5  #sólo 5 para las pruebas :)
+        for link, i in zip(detailLinks, range(n)):
+            headers, values = details.scrapeDetails(link)
+            print (headers)
+            print (values)
