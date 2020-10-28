@@ -1,20 +1,20 @@
 import requests 
-from bs4 import BeautifulSoup 
 import csv 
+import os
 
+from bs4 import BeautifulSoup 
 from companydetail import DetailScraper
+from StocksStore import StoreService
 
 class StockScraper():
-
-    def __internalMethod(self, attr):
-        print("Just to try")
-        return "nothing"
-    
     
     def __init__(self, url,subdomain):
             self.url = url 
             self.subdomain = subdomain 
             self.data = []
+            self.storeobject = StoreService(os.getcwd(), "stocks.csv")
+            # self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory.csv")
+
 
     def __getHtml(self, url):
         print("getting: "+ url)
@@ -27,12 +27,18 @@ class StockScraper():
 
     def __getArrayFromRow(self, row):
         cells = row.find_all('td')
+        if len(cells)==0 :
+            cells = row.find_all('th')
+
         array = [i.text for i in cells]        
         return array
 
     def __getLinkURL(self, row):
         link = row.find('a')
-        return link.get('href')
+        if link is not None: 
+            return link.get('href')
+        else:
+            return None
 
     def scrape(self):
         print ("Stocks Web Scraping  from " + "'" + self.url + "'...")
@@ -41,25 +47,28 @@ class StockScraper():
         soup = BeautifulSoup(page.text, 'html.parser') 
 
         stockTable = self.__getStockTable(soup, 'ctl00_Contenido_tblAcciones')
-        detailLinks = []
-        stockInfo = []
+        details= DetailScraper()
 
+        links = []
+        stockInfo = []
+        headers = []
+       
         for row in stockTable: 
             cells = self.__getArrayFromRow(row)            
             if len(cells) != 0:
-                detailLinks.append(self.__getLinkURL(row))
-                stockInfo.append(cells)
+                link = self.__getLinkURL(row)
+                if link is not None:
+                    links.append(link)
+                    print(link)
+                    values = details.scrapeValueDetails(link)
+                    stockInfo.append(cells+values)
+                else:
+                    headers=cells
+        
+        headers = headers+details.scapeHeaderDetails(links[0])           
 
-        # print(detailLinks)
-        # print(stockInfo)
-
-        #todo: add "stockInfo" information into a file
-
-
-        details= DetailScraper()
-
-        n=5  #sólo 5 para las pruebas :)
-        for link, i in zip(detailLinks, range(n)):
-            headers, values = details.scrapeDetails(link)
-            print (headers)
-            print (values)
+        self.storeobject.open_file()        
+        self.storeobject.write_row(headers)
+        for stock in stockInfo:
+            self.storeobject.write_row(stock)      
+        self.storeobject.close_file()
