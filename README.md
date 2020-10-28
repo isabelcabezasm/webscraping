@@ -4,7 +4,7 @@
 
 Evaluación inicial
 
-Tipología y ciclo de los datos. <br>
+Tipología y ciclo de vida de los datos. <br>
 Práctica 1. <br>
 Isabel Cabezas Martín <br>
 Jorge Saura Fillat <br>
