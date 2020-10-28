@@ -7,3 +7,6 @@ Evaluación inicial
 3) su tamaño,
 4) la tecnología usada y 
 5) el propietario del mismo.
+
+
+Modificado desde mi fork
