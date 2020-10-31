@@ -40,6 +40,21 @@ class StockScraper():
         else:
             return None
 
+    def __getIbex35Headers(self,stockTable):
+        
+        row = stockTable[0]
+        cells = self.__getArrayFromRow(row)
+        
+        return cells
+
+    def __getCompanyDetailHeaders(self, stockTable, detailsScraper):
+        row = stockTable[1]
+        link = self.__getLinkURL(row)
+        array = detailsScraper.scapeHeaderDetails(link)     
+        return array
+
+
+
     def scrape(self):
         print ("Stocks Web Scraping  from " + "'" + self.url + "'...")
 
@@ -53,6 +68,16 @@ class StockScraper():
         stockInfo = []
         headers = []
        
+        headersIbex35 = self.__getIbex35Headers(stockTable)
+        
+        headersDeatil = self.__getCompanyDetailHeaders(stockTable,details)
+
+
+        headers = headersIbex35 + headersDeatil         
+
+        self.storeobject.open_file()        
+        self.storeobject.write_row(headers)
+
         for row in stockTable: 
             cells = self.__getArrayFromRow(row)            
             if len(cells) != 0:
@@ -61,14 +86,10 @@ class StockScraper():
                     links.append(link)
                     print(link)
                     values = details.scrapeValueDetails(link)
-                    stockInfo.append(cells+values)
-                else:
-                    headers=cells
-        
-        headers = headers+details.scapeHeaderDetails(links[0])           
+                    #stockInfo.append(cells+values)
+                    self.storeobject.write_row(cells+values)    
 
-        self.storeobject.open_file()        
-        self.storeobject.write_row(headers)
-        for stock in stockInfo:
-            self.storeobject.write_row(stock)      
+        
+        # headers = headers+details.scapeHeaderDetails(links[0])
+              
         self.storeobject.close_file()
