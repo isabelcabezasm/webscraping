@@ -49,10 +49,11 @@ class historicScraper():
 
         # get page historic
         pageHistoric = self.__getPageHistoric(isin)
-        soup = BeautifulSoup(pageHistoric.text, 'html.parser')
 
         # filter dates --> 1 year
         # get data
+        pageHistoricFiltered = self.__getPageHistoric_Filtered(pageHistoric)
+
         # navigate  all next pages
         # get data
         # return data
