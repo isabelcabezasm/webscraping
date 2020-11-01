@@ -5,6 +5,7 @@ import os
 from bs4 import BeautifulSoup 
 from companydetail import DetailScraper
 from StocksStore import StoreService
+from companyhistory import historicScraper
 
 class StockScraper():
     
@@ -13,7 +14,8 @@ class StockScraper():
             self.subdomain = subdomain 
             self.data = []
             self.storeobject = StoreService(os.getcwd(), "stocks.csv")
-            # self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory.csv")
+            self.histDomain = "/esp/aspx/Empresas/InfHistorica.aspx?ISIN="
+            self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory.csv")
 
 
     def __getHtml(self, url):
@@ -65,31 +67,35 @@ class StockScraper():
         details= DetailScraper()
 
         links = []
-        stockInfo = []
-        headers = []
+        ISINs = []
        
-        headersIbex35 = self.__getIbex35Headers(stockTable)
-        
-        headersDeatil = self.__getCompanyDetailHeaders(stockTable,details)
+        headersIbex35 = self.__getIbex35Headers(stockTable)        
+        headersDetail = self.__getCompanyDetailHeaders(stockTable,details)
+        headers = headersIbex35 + headersDetail
 
-
-        headers = headersIbex35 + headersDeatil         
-
-        self.storeobject.open_file()        
+        self.storeobject.open_file()
         self.storeobject.write_row(headers)
-
+    
         for row in stockTable: 
             cells = self.__getArrayFromRow(row)            
             if len(cells) != 0:
                 link = self.__getLinkURL(row)
                 if link is not None:
                     links.append(link)
-                    print(link)
                     values = details.scrapeValueDetails(link)
-                    #stockInfo.append(cells+values)
-                    self.storeobject.write_row(cells+values)    
-
-        
-        # headers = headers+details.scapeHeaderDetails(links[0])
-              
+                    ISINs.append(values[0])
+                    self.storeobject.write_row(cells+values)   
+    
         self.storeobject.close_file()
+        
+        self.storeHistoryobject.open_file()
+        scraper = historicScraper(self.url,self.histDomain)
+        headers = scraper.getCompanyHistoricHeaders(ISINs[0])
+        self.storeHistoryobject.write_row(headers)
+        for isin in ISINs:
+            companyData= scraper.scrapeCompanyHistoric(isin)
+            for row in companyData:
+                self.storeHistoryobject.write_row(row)
+        self.storeHistoryobject.close_file()
+       
+       
