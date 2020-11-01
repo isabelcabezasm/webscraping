@@ -3,6 +3,7 @@ import csv
 import os
 
 from bs4 import BeautifulSoup 
+from datetime import date, datetime
 from companydetail import DetailScraper
 from StocksStore import StoreService
 from companyhistory import historicScraper
@@ -10,12 +11,14 @@ from companyhistory import historicScraper
 class StockScraper():
     
     def __init__(self, url,subdomain):
+            current_date_time = datetime.today() 
+            dt_string = current_date_time.strftime('%y-%m-%d-%H.%M.%S')
             self.url = url 
             self.subdomain = subdomain 
             self.data = []
-            self.storeobject = StoreService(os.getcwd(), "stocks.csv")
+            self.storeobject = StoreService(os.getcwd(), "stocks"+dt_string+".csv")
             self.histDomain = "/esp/aspx/Empresas/InfHistorica.aspx?ISIN="
-            self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory.csv")
+            self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory"+dt_string+".csv")
 
 
     def __getHtml(self, url):
@@ -85,9 +88,9 @@ class StockScraper():
                     values = details.scrapeValueDetails(link)
                     ISINs.append(values[0])
                     self.storeobject.write_row(cells+values)   
-    
         self.storeobject.close_file()
         
+
         self.storeHistoryobject.open_file()
         scraper = historicScraper(self.url,self.histDomain)
         headers = scraper.getCompanyHistoricHeaders(ISINs[0])

@@ -123,17 +123,20 @@ class historicScraper():
         
         data = []
 
-        for dateR in dateRanges:
+        for dateR, i  in zip(dateRanges, range(len(dateRanges))):
 
             initialDate = dateR[0]
             finishDate  = dateR[1]
 
             # get data
             pageHistoricFiltered = self.__getPageHistoric_Filtered(pageHistoric, initialDate, finishDate)
-            companyDataInfo = self.__getCompanyDataInfo(pageHistoricFiltered, "FrmBusq")            
+            print("*", end="")
+            companyDataInfo = self.__getCompanyDataInfo(pageHistoricFiltered, "FrmBusq")  
+            if i == 0:
+                print(companyDataInfo[0])          
             dataTable = self.__getDataTable(pageHistoricFiltered, "ctl00_Contenido_tblDatos")
             if dataTable: 
                 values = self.__getHistoricDataFromTable(dataTable, companyDataInfo)
                 data = data + values
-       
+        print(" ")
         return data
