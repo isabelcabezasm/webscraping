@@ -11,18 +11,16 @@ from companyhistory import historicScraper
 class StockScraper():
     
     def __init__(self, url,subdomain):
-            current_date_time = datetime.today() 
-            dt_string = current_date_time.strftime('%y-%m-%d-%H.%M.%S')
-            self.url = url 
-            self.subdomain = subdomain 
-            self.data = []
-            self.storeobject = StoreService(os.getcwd(), "stocks"+dt_string+".csv")
-            self.histDomain = "/esp/aspx/Empresas/InfHistorica.aspx?ISIN="
-            self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory"+dt_string+".csv")
-
+        current_date_time = datetime.today() 
+        dt_string = current_date_time.strftime('%y-%m-%d-%H.%M.%S')
+        self.url = url 
+        self.subdomain = subdomain 
+        self.data = []
+        self.storeobject = StoreService(os.getcwd(), "stocks"+dt_string+".csv")
+        self.histDomain = "/esp/aspx/Empresas/InfHistorica.aspx?ISIN="
+        self.storeHistoryobject = StoreService(os.getcwd(), "stocksHistory"+dt_string+".csv")
 
     def __getHtml(self, url):
-        print("getting: "+ url)
         return requests.get(url) 
 
     def __getStockTable(self, soup, id):
@@ -35,8 +33,26 @@ class StockScraper():
         if len(cells)==0 :
             cells = row.find_all('th')
 
-        array = [i.text for i in cells]        
-        return array
+        array = [i.text for i in cells]
+        return self.__typefyArray(array)
+
+
+    def __typefyArray(self, array):
+        array2 = []
+        for a in array:
+            item = self.__typefy(a)
+            if item:
+                array2.append(item)
+            else:
+                array2.append(a)
+        return array2
+
+    def __typefy(self, text):
+        # si el número tiene comas las quitamos
+        try:
+            return float(text.replace(".","").replace(",","."))
+        except ValueError:
+            return None
 
     def __getLinkURL(self, row):
         link = row.find('a')
@@ -45,11 +61,9 @@ class StockScraper():
         else:
             return None
 
-    def __getIbex35Headers(self,stockTable):
-        
+    def __getIbex35Headers(self,stockTable):        
         row = stockTable[0]
-        cells = self.__getArrayFromRow(row)
-        
+        cells = self.__getArrayFromRow(row)        
         return cells
 
     def __getCompanyDetailHeaders(self, stockTable, detailsScraper):
@@ -57,8 +71,6 @@ class StockScraper():
         link = self.__getLinkURL(row)
         array = detailsScraper.scapeHeaderDetails(link)     
         return array
-
-
 
     def scrape(self):
         print ("Stocks Web Scraping  from " + "'" + self.url + "'...")

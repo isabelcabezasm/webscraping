@@ -19,6 +19,28 @@ class historicScraper():
         return requests.get(url) 
 
 
+    def __typefyArray(self, array):
+        array2 = []
+        for a in array:
+            if type(a) == int:
+                array2.append(a)
+            else:
+                item = self.__typefy(a)
+                if item:
+                    array2.append(item)
+                else:
+                    array2.append(a)
+        return array2
+
+    def __typefy(self, text):
+        # si el número tiene comas las quitamos
+        try:
+            return float(text.replace(".","").replace(",","."))
+        except ValueError:
+            return None
+
+
+
     def __getFormData(self, soup, initialDay, initialMonth, initialYear, finalDay, finalMonth, finalYear):
         return {
         '__EVENTTARGET': '',
@@ -65,7 +87,7 @@ class historicScraper():
                 cells = row.find_all('td')
                 values = [i.text for i in cells] 
                 values = addedCompanyInfo+values
-                data.append(values)
+                data.append(self.__typefyArray(values))
 
         return data
 
